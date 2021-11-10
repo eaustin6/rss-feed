@@ -41,9 +41,14 @@ def create_feed_checker(feed_url):
         if len(FEED.entries) == 0:
             return
         entry = FEED.entries[0]
+        links = entry.links
+        for link in links:
+            if link.type == 'application/x-bittorrent':
+                title = entry.title
+                torrent_link = link.href
         if entry.id != db.get_link(feed_url).link:
                        # ↓ Edit this message as your needs.
-            message = f"**ℹ️ 🄽🄴🅆 🅁🅂🅂 ℹ️**\n\n**{entry.title}**\n\n```{entry.link}```"
+            message = f"**ℹ️ 🄽🄴🅆 🅁🅂🅂 ℹ️**\n\n**{title or 'Unavailable'}**\n\n```{torrent_link or 'Unavailable'}```"
             try:
                 app.send_message(log_channel, message)
                 if app2 is not None:
